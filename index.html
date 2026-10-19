@@ -172,6 +172,17 @@
     const newUserIdInput = document.getElementById('newUserIdInput');
     const userDisplay = document.getElementById('userDisplay');
 
+    // 상태 메시지 표시 함수 추가
+    function showStatus(msg) {
+      statusText.innerText = msg;
+      statusNotice.classList.remove('hidden');
+    }
+
+    // 상태 메시지 숨김 함수 추가
+    function hideStatus() {
+      statusNotice.classList.add('hidden');
+    }
+
     // 모달 열기
     changeUserBtn.onclick = () => {
       newUserIdInput.value = myUserId;
@@ -212,35 +223,35 @@
       'en': 'English'
     };
 
-    // 기존의 펠치 부분을 Netlify 함수 호출로 변경
-async function translateText(text) {
-  const targetLangCode = targetLangSelect.value;
-  const targetLang = langMap[targetLangCode] || "English";
+    async function translateText(text) {
+      const targetLangCode = targetLangSelect.value;
+      const targetLang = langMap[targetLangCode] || "English";
 
-  try {
-    showStatus("AI 번역 중...");
-    const response = await fetch('/.netlify/functions/translate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: text, targetLang: targetLang })
-    });
+      try {
+        showStatus("AI 번역 중...");
+        const response = await fetch('/.netlify/functions/translate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: text, targetLang: targetLang })
+        });
 
-    hideStatus();
+        hideStatus();
 
-    if (!response.ok) {
-      console.warn("Translation Server Warning:", response.statusText);
-      return null;
+        if (!response.ok) {
+          console.warn("Translation Server Warning:", response.statusText);
+          return null;
+        }
+
+        const data = await response.json();
+        return data.translated || null;
+
+      } catch (error) {
+        console.error("Translation Exception:", error);
+        hideStatus();
+        return null;
+      }
     }
 
-    const data = await response.json();
-    return data.translated || null;
-
-  } catch (error) {
-    console.error("Translation Exception:", error);
-    hideStatus();
-    return null;
-  }
-}
     // 메시지 발송 함수
     async function sendMessage(text) {
       if (!text || !text.trim()) return;
@@ -296,7 +307,7 @@ async function translateText(text) {
       /* 원문 텍스트 */
       let contentHtml = `<div class="text-xs md:text-sm ${isMyMsg ? 'text-indigo-200' : 'text-slate-400'} font-normal break-words leading-relaxed">${escapeHtml(data.text)}</div>`;
       
-      /* 번역 텍스트 (볼드체 제거 font-normal 적용) */
+      /* 번역 텍스트 */
       if (data.translatedText) {
         contentHtml += `
           <div class="mt-1 pt-1 border-t ${isMyMsg ? 'border-indigo-500/50 text-white' : 'border-slate-200/80 text-indigo-700'} text-base md:text-lg font-normal break-words leading-snug flex items-start gap-1.5">
@@ -320,7 +331,7 @@ async function translateText(text) {
       return div.innerHTML;
     }
 
-    // 음성 인식 (Speech Recognition) 설정
+    // 음성 인식 설정
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
     if (SpeechRecognition) {
