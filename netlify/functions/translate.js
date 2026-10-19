@@ -15,7 +15,7 @@ exports.handler = async function(event, context) {
     }
 
     const systemPrompt = `You are a professional translator. Translate the given text into ${targetLang}. Keep the tone natural and appropriate for conversation. Output ONLY the translated text without extra explanations or quotes.`;
-    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${apiKey}`;
 
     const response = await fetch(endpoint, {
       method: 'POST',
