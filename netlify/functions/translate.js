@@ -95,9 +95,8 @@ exports.handler = async function(event, context) {
             }
           ],
           generationConfig: {
-          //  thinkingConfig: {
-            //  thinkingLevel: "LOW"
-            }
+            temperature: 0.2,
+            maxOutputTokens: 512
           }
         }),
         signal: controller.signal
