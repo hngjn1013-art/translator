@@ -154,6 +154,26 @@
 
     // DOM Elements
     const chatContainer = document.getElementById('chatContainer');
+
+    // 채팅 내역이 로드되거나 화면 크기가 바뀌어도 최신 메시지 위치로 이동
+    function scrollChatToBottom() {
+      requestAnimationFrame(() => {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+
+        // 레이아웃 계산이 한 번 더 끝난 뒤 위치를 보정
+        requestAnimationFrame(() => {
+          chatContainer.scrollTop = chatContainer.scrollHeight;
+        });
+      });
+    }
+
+    // 페이지 레이아웃이 완성된 뒤에도 맨 아래 위치를 한 번 더 보장
+    window.addEventListener('load', () => {
+      scrollChatToBottom();
+      setTimeout(scrollChatToBottom, 150);
+      setTimeout(scrollChatToBottom, 500);
+    });
+
     const micBtn = document.getElementById('micBtn');
     const micIcon = document.getElementById('micIcon');
     const textInput = document.getElementById('textInput');
@@ -321,8 +341,8 @@
       msgWrapper.appendChild(msgBubble);
       chatContainer.appendChild(msgWrapper);
 
-      // 자동 스크롤
-      chatContainer.scrollTop = chatContainer.scrollHeight;
+      // 새 메시지가 추가되면 최신 메시지 위치로 이동
+      scrollChatToBottom();
     });
 
     function escapeHtml(text) {
