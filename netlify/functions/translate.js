@@ -68,7 +68,7 @@ exports.handler = async function(event, context) {
       `Output only the translated text without explanations or quotation marks.`;
 
     // 5. Gemini API 호출
-    const model = "gemini-3.8-flash";
+    const model = "gemini-3.5-flash-lite";
     const endpoint =
       `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
 
@@ -95,8 +95,8 @@ exports.handler = async function(event, context) {
             }
           ],
           generationConfig: {
-            thinkingConfig: {
-              thinkingLevel: "LOW"
+          //  thinkingConfig: {
+            //  thinkingLevel: "LOW"
             }
           }
         }),
